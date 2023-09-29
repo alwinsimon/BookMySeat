@@ -6,6 +6,7 @@ import { signInRouter } from "./routes/signIn";
 import { signOutRouter } from "./routes/signOut";
 import { signUpRouter } from "./routes/signUp";
 
+import { NotFoundError } from "./errors/not-found-error";
 import { errorHandler } from "./middlewares/error-handler";
 
 
@@ -23,6 +24,12 @@ app.use(signUpRouter);
 
 
 
+// Resource Not Found Error Configuration 
+app.all('*', ()=> {
+  throw new NotFoundError();
+});
+
+// Custom Error Handler Configuration
 app.use(errorHandler);
 
 
