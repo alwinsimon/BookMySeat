@@ -6,6 +6,9 @@ import { signInRouter } from "./routes/signIn";
 import { signOutRouter } from "./routes/signOut";
 import { signUpRouter } from "./routes/signUp";
 
+import { errorHandler } from "./middlewares/error-handler";
+
+
 const app = express();
 
 app.use(json());
@@ -17,6 +20,10 @@ app.use(currentUserRouter);
 app.use(signInRouter);
 app.use(signOutRouter);
 app.use(signUpRouter);
+
+
+
+app.use(errorHandler);
 
 
 app.listen(PORT, () => {
