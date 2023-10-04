@@ -9,7 +9,7 @@ export const errorHandler = (
 ) => {
 
   if (err instanceof CustomError) {
-    res.status(err.statusCode).send({ errors: err.serializeErrors() });
+    return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
 
   res.status(400).send({
