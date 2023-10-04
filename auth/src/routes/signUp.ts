@@ -42,7 +42,7 @@ router.post(
       "myTemporarySecret"
     );
 
-    // Store JWT on session object
+    // Store JWT on session object (for cookie-session middleware to pick up)
     req.session = {
       jwt: userJwt,
     };
