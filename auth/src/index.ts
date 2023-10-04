@@ -4,6 +4,8 @@ import { json } from "body-parser";
 
 import mongoose from "mongoose";
 
+import cookieSession from "cookie-session";
+
 import { currentUserRouter } from "./routes/current-user";
 import { signInRouter } from "./routes/signIn";
 import { signOutRouter } from "./routes/signOut";
@@ -14,9 +16,17 @@ import { errorHandler } from "./middlewares/error-handler";
 
 const app = express();
 
+// Configuring express app to trust proxied requests from ingress-nginx.
+app.set("trust proxy", true);
+
 app.use(json());
 
-const PORT = 3000;
+app.use(
+  cookieSession({
+    signed: false, // To keep the data inside cookie un-encrypted.
+    secure: true, // To keep it a https only cookie.
+  })
+);
 
 app.use(currentUserRouter);
 app.use(signInRouter);
@@ -39,6 +49,8 @@ const startAuthServer = async () => {
   } catch (err) {
     console.error("Error Connecting to Auth DB:", err);
   }
+
+  const PORT = 3000;
 
   // ========================Starting Auth Server========================
   app.listen(PORT, () => {
