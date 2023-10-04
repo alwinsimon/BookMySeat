@@ -1,9 +1,26 @@
-import express from 'express';
+import express, { Request, Response } from "express";
+import { body, validationResult } from "express-validator";
+import { RequestValidationError } from "../errors/request-validation-error";
 
 const router = express.Router();
 
-router.post("/api/users/signin", (req, res) => {
-  res.send("Hello World!");
-});
+router.post(
+  "/api/users/signin",
+  [
+    body("email").isEmail().withMessage("Provide a valid email."),
+    body("password")
+      .trim()
+      .notEmpty()
+      .withMessage("A password must be provided."),
+  ],
+  (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw new RequestValidationError(errors.array());
+    }
 
-export { router as signInRouter }
+    res.status(200).send("Hello World!");
+  }
+);
+
+export { router as signInRouter };
