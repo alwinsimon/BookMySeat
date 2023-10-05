@@ -6,6 +6,9 @@ let mongo: any; // Declaring it in the beginning to avoid scope issues while usi
 
 // This function will be executed before starting the testing process.
 beforeAll(async () => {
+  // Setting environment variables in the test environment
+  process.env.JWT_KEY = "testjwtKey";
+
   // Creating a instance of the Mongo Memory server to use as DB for Testing purposes
   mongo = await MongoMemoryServer.create();
   const mongoUri = mongo.getUri();
