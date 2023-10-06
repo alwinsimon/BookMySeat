@@ -4,16 +4,9 @@ import { app } from "../../app";
 import { response } from "express";
 
 it("Current-User Route Test: Check for Valid User Data Return - Returns current user data on success.", async () => {
-  // Sign-Up to Create a New User
-  const signUpResponse = await request(app)
-    .post("/api/users/signup")
-    .send({
-      email: "tester@test.com",
-      password: "password@123",
-    })
-    .expect(201);
-  const cookieFromSignUp = signUpResponse.get("Set-Cookie");
-  // GET request to current user route
+  // Use the testUserSignUp global function written in setup.ts file in test directory to get a cookie
+  const cookieFromSignUp = await global.testUserSignUp()
+  // GET request to current user route with cookie
   const response = await request(app)
     .get("/api/users/currentuser")
     .set("Cookie", cookieFromSignUp)
