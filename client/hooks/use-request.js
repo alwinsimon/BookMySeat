@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default ({ url, method, body }) => {
+export default ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
   const makeRequest = async () => {
@@ -9,6 +9,12 @@ export default ({ url, method, body }) => {
       setErrors(null); // Setting error to null initially to prevent errors from being displayed always.
 
       const response = await axios[method](url, body);
+
+      // If the call back exist, then return the call back with response data.
+      if (onSuccess) {
+        onSuccess(response.data);
+      }
+
       return response.data;
     } catch (err) {
       setErrors(
@@ -24,5 +30,5 @@ export default ({ url, method, body }) => {
     }
   };
 
-  return [ makeRequest, errors ]
+  return [makeRequest, errors];
 };
