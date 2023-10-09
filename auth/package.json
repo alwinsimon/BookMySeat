@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@bookmyseat/common": "^1.0.1",
     "@types/cookie-session": "^2.0.45",
     "@types/express": "^4.17.18",
     "@types/jsonwebtoken": "^9.0.3",
