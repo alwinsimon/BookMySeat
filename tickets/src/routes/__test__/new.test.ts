@@ -1,7 +1,8 @@
 import request from "supertest";
 
 import { app } from "../../app";
-import { response } from "express";
+
+import { Ticket } from "../../models/ticket";
 
 it("Tickets POST Route Test: Has a route handler listening to /api/tickets for POST Requests.", async () => {
   // Make a request to the route and make sure that we are not getting a 404 which indicates the absence of the route
@@ -30,7 +31,7 @@ it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Title is P
     .set("Cookie", global.testUserSignUp())
     .send({
       title: "",
-      price: "100"
+      price: "100",
     })
     .expect(400);
 
@@ -38,7 +39,7 @@ it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Title is P
     .post("/api/tickets")
     .set("Cookie", global.testUserSignUp())
     .send({
-      price: "100"
+      price: "100",
     })
     .expect(400);
 });
@@ -50,26 +51,40 @@ it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Price is P
     .set("Cookie", global.testUserSignUp())
     .send({
       title: "Sample Title",
-      price: "-100"
+      price: "-100",
     })
     .expect(400);
 
-  await request(app)
-    .post("/api/tickets")
-    .set("Cookie", global.testUserSignUp())
-    .send({
-      title: "Sample Title"
-    })
-    .expect(400);
-});
-
-it("Tickets POST Route Test: /api/tickets Successfully Create a Ticket when Valid Parameters is provided.", async () => {
   await request(app)
     .post("/api/tickets")
     .set("Cookie", global.testUserSignUp())
     .send({
       title: "Sample Title",
-      price: "100.50"
+    })
+    .expect(400);
+});
+
+it("Tickets POST Route Test: /api/tickets Successfully Create a Ticket when Valid Parameters is provided.", async () => {
+  // Get all the tickets that are available in the DB before test.
+  let tickets = await Ticket.find({});
+
+  // Since the above query will be run on Test MongoDB, There won't be any tickets.
+  expect(tickets.length).toEqual(0);
+
+  const title = "Sample Ticket";
+  const price = 100.50;
+
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      title: title,
+      price: price,
     })
     .expect(201);
+
+  tickets = await Ticket.find({});
+  expect(tickets.length).toEqual(1);
+  expect(tickets[0].title).toEqual(title);
+  expect(tickets[0].price).toEqual(price);
 });
