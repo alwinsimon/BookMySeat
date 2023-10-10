@@ -1,10 +1,11 @@
 import express from "express";
 import "express-async-errors"; // Package used to handle async errors
 import { json } from "body-parser";
-
 import cookieSession from "cookie-session";
 
 import { errorHandler, NotFoundError } from "@bookmyseat/common";
+
+import { createTicketRouter } from "./routes/new";
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.use(
     The value will be false in test environment to allow sending cookie over http also.*/,
   })
 );
+
+app.use(createTicketRouter);
 
 // Resource Not Found Error Configuration
 app.all("*", () => {
