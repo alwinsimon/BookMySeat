@@ -16,6 +16,8 @@ spec:
         - name: auth
           image: alwinsimon/bookmyseat-auth
           env:
+            - name: MONGO_DB_URI
+              value: "mongodb://auth-mongo-srv:27017/auth"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
