@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { requireAuth, validateRequest } from "@bookmyseat/common";
 
+import { Ticket } from "../models/ticket";
+
 const router = express.Router();
 
 router.post(
@@ -15,7 +17,17 @@ router.post(
   ],
   validateRequest,
   (req: Request, res: Response) => {
-    res.sendStatus(201);
+    const { title, price } = req.body;
+
+    const ticket = Ticket.build({
+      title,
+      price,
+      userId: req.currentUser!.id,
+    });
+
+    ticket.save();
+
+    res.sendStatus(201).send(ticket);
   }
 );
 
