@@ -63,4 +63,13 @@ it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Price is P
     .expect(400);
 });
 
-it("Tickets POST Route Test: /api/tickets Successfully Create a Ticket when Valid Parameters is provided.", async () => {});
+it("Tickets POST Route Test: /api/tickets Successfully Create a Ticket when Valid Parameters is provided.", async () => {
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      title: "Sample Title",
+      price: "100.50"
+    })
+    .expect(201);
+});
