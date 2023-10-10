@@ -1,12 +1,13 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import request from "supertest";
-import { app } from "../app";
+import jwt from "jsonwebtoken";
 
+import { app } from "../app";
 
 // Declaring the function testUserSignUp to the global scope so that it can be accessed anywhere within this application
 declare global {
-  var testUserSignUp: () => Promise<string[]>;
+  var testUserSignUp: () => string[];
 }
 
 let mongo: any; // Declaring it in the beginning to avoid scope issues while using inside different functions.
@@ -46,16 +47,30 @@ afterAll(async () => {
 
 // Create a global function to be used in tests for sign-up a test user and get a cookie to be used in the test
 // This avoids repetition of sign-up logic in multiple tests for obtaining cookie for authenticated user test.
-global.testUserSignUp = async () => {
-  const email = "tester@test.com";
-  const password = "password@123";
+global.testUserSignUp = () => {
+  /*
+    This function will mimmic the cookie creation by Auth Service and will return a string.
+    This string can be used as the cookie for authentication in test environment.
+  */
 
-  const response = await request(app)
-    .post("/api/users/signup")
-    .send({ email: email, password: password })
-    .expect(201);
+  // Build a Payload with { id, email } to create a JWT
+  const payload = {
+    id: "GFjytfKLUYG76r7568967IUYt876t087",
+    email: "tester@test.com",
+  };
 
-  const cookieFromSignUp = response.get("Set-Cookie");
+  // Create a JWT with the payload
+  const token = jwt.sign(payload, process.env.JWT_KEY!);
 
-  return cookieFromSignUp;
+  // Build a Session Object with JWT. e.g. { jwt: MY_TOKEN }
+  const session = { jwt: token };
+
+  // Convert that session object into JSON
+  const sessionJSON = JSON.stringify(session);
+
+  // Take JSON and encode it as base64
+  const base64EncodedSessionObject = Buffer.from(sessionJSON).toString("base64");
+
+  // Return the base64 encoded string, which can be used as cookie with the data encoded.
+  return [`session=${base64EncodedSessionObject}`];
 };
