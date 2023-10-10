@@ -23,8 +23,44 @@ it("Tickets POST Route Test: /api/tickets can be accessed if the user is Signed-
   expect(response.status).not.toEqual(401);
 });
 
-it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Title is Provided.", async () => {});
+it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Title is Provided.", async () => {
+  // Make a request to the route with authentication data and invalid Title
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      title: "",
+      price: "100"
+    })
+    .expect(400);
 
-it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Price is Provided.", async () => {});
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      price: "100"
+    })
+    .expect(400);
+});
+
+it("Tickets POST Route Test: /api/tickets Returns Error if an Invalid Price is Provided.", async () => {
+  // Make a request to the route with authentication data and invalid Title
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      title: "Sample Title",
+      price: "-100"
+    })
+    .expect(400);
+
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      title: "Sample Title"
+    })
+    .expect(400);
+});
 
 it("Tickets POST Route Test: /api/tickets Successfully Create a Ticket when Valid Parameters is provided.", async () => {});
