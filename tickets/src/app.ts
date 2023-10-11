@@ -1,10 +1,12 @@
 import express from "express";
 import "express-async-errors"; // Package used to handle async errors
 import { json } from "body-parser";
-
 import cookieSession from "cookie-session";
 
-import { errorHandler, NotFoundError } from "@bookmyseat/common";
+import { errorHandler, NotFoundError, currentUser } from "@bookmyseat/common";
+
+import { createTicketRouter } from "./routes/new";
+import { showTicketRouter } from "./routes/show";
 
 const app = express();
 
@@ -20,6 +22,12 @@ app.use(
     The value will be false in test environment to allow sending cookie over http also.*/,
   })
 );
+
+// Check all the request for cookie and if cookie exist, attach a currentUser property (with auth details) to the request object.
+app.use(currentUser);
+
+app.use(createTicketRouter);
+app.use(showTicketRouter);
 
 // Resource Not Found Error Configuration
 app.all("*", () => {
