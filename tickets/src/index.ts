@@ -3,9 +3,8 @@ import mongoose from "mongoose";
 import { app } from "./app";
 
 const startServer = async () => {
-  
   const PORT = 3000;
-  const SERVICE_NAME = "AUTH";
+  const SERVICE_NAME = "TICKETS";
 
   // Check if ENV Variables exist
   if (!process.env.JWT_KEY) {
