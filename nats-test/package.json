@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "publish": "nodemon --watch 'src/publisher.ts' --exec ts-node-dev --notify false src/publisher.ts",
-    "listen": "nodemon --watch 'src/listener.ts' --exec ts-node-dev --notify false src/listener.ts"
+    "publish": "nodemon --watch 'src/publisher.ts' --exec ts-node-dev --rs --notify false src/publisher.ts",
+    "listen": "nodemon --watch 'src/listener.ts' --exec ts-node-dev --rs --notify false src/listener.ts"
   },
   "keywords": [],
   "author": "",
