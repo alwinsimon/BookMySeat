@@ -18,8 +18,13 @@ stan.on("connect", () => {
   });
 
   const serviceQueueGroup = "order-service-queue-group";
+  const durableName = "order-service-durable-name";
 
-  const subscriptionOptions = stan.subscriptionOptions().setManualAckMode(true);
+  const subscriptionOptions = stan
+    .subscriptionOptions()
+    .setManualAckMode(true)
+    .setDeliverAllAvailable()
+    .setDurableName(durableName);
 
   const subscription = stan.subscribe(
     "ticket:created",
