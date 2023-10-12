@@ -13,7 +13,13 @@ stan.on("connect", () => {
 
   const serviceQueueGroup = "order-service-queue-group";
 
-  const subscription = stan.subscribe("ticket:created", serviceQueueGroup);
+  const subscriptionOptions = stan.subscriptionOptions().setManualAckMode(true);
+
+  const subscription = stan.subscribe(
+    "ticket:created",
+    serviceQueueGroup,
+    subscriptionOptions
+  );
 
   subscription.on("message", (msg: Message) => {
     console.log(`Message received: ${msg.getSubject()}`);
@@ -25,5 +31,7 @@ stan.on("connect", () => {
         `Received Event #${msg.getSequence()} in Service Queue Group: ${serviceQueueGroup}, with data: ${data}`
       );
     }
+
+    msg.ack();
   });
 });
