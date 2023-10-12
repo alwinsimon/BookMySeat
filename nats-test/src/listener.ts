@@ -11,6 +11,12 @@ const stan = nats.connect("ticketing", listenerName, {
 stan.on("connect", () => {
   console.log(`Listener: ${listenerName} ==> Connected to NATS`);
 
+  stan.on("close", () => {
+    console.log(`NATS Connection of Listener: ${listenerName} closed !!!`);
+
+    process.exit();
+  });
+
   const serviceQueueGroup = "order-service-queue-group";
 
   const subscriptionOptions = stan.subscriptionOptions().setManualAckMode(true);
@@ -35,3 +41,6 @@ stan.on("connect", () => {
     msg.ack();
   });
 });
+
+process.on("SIGINT", () => stan.close());
+process.on("SIGTERM", () => stan.close());
