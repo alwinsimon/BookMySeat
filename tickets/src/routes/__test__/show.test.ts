@@ -1,13 +1,15 @@
 import request from "supertest";
+import mongoose from "mongoose";
 
 import { app } from "../../app";
 
 it("Tickets with ID GET Route Test: /api/tickets Returns a 404 if the requested Ticket is Not Found/Valid.", async () => {
+  const mockTicketId = new mongoose.Types.ObjectId().toHexString();
+
   // Make a request to the route and make sure that we are getting a 404 which indicates the absence of a valid ticket.
   const response = await request(app)
-    .get("/api/tickets/0000someInvalidTicketID")
+    .get(`/api/tickets/${mockTicketId}`)
     .send({});
-    console.log(response.body);
   expect(response.status).toEqual(404);
 });
 
