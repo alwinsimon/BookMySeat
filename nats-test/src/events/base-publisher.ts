@@ -28,7 +28,7 @@ export abstract class Publisher<T extends Event> {
 
         }
 
-        console.log(`Publish event in channel: ${this.subject} with Data:`, data);
+        console.log(`Published event in channel: ${this.subject} with Data:`, data);
 
         resolve();
 
