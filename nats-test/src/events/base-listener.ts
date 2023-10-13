@@ -1,11 +1,16 @@
 import { Message, Stan } from "node-nats-streaming";
+import { Subjects } from "./subjects";
 
+interface Event {
+  subject: Subjects;
+  data: any;
+}
 
-export abstract class Listener {
+export abstract class Listener<T extends Event> {
   // Abstract properties that the sub-class SHOULD implement.
-  abstract subject: string;
+  abstract subject: T["subject"];
   abstract queueGroupName: string;
-  abstract onMessage(data: any, msg: Message): void;
+  abstract onMessage(data: T["data"], msg: Message): void;
 
   // Private properties that can be modified only within this class.
   private client: Stan;
@@ -36,7 +41,9 @@ export abstract class Listener {
 
     subscription.on("message", (msg: Message) => {
       console.log(
-        `Message #${msg.getSequence()} in channel ${this.subject} received by Queue Group: ${this.queueGroupName}.`
+        `Message #${msg.getSequence()} in channel ${
+          this.subject
+        } received by Queue Group: ${this.queueGroupName}.`
       );
 
       const parsedData = this.parseMessage(msg);
