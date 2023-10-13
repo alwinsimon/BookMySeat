@@ -9,7 +9,6 @@ interface Event {
 export abstract class Publisher<T extends Event> {
   // Abstract properties that the sub-class SHOULD implement.
   abstract subject: T["subject"];
-  abstract onEventPublish(subject: T["subject"], data: T["data"]): void;
 
   // Private properties that can be modified only within this class.
   private client: Stan;
