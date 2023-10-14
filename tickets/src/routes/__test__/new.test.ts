@@ -4,6 +4,8 @@ import { app } from "../../app";
 
 import { Ticket } from "../../models/ticket";
 
+import { natsClient } from "../../nats-client";
+
 it("Tickets POST Route Test: Has a route handler listening to /api/tickets for POST Requests.", async () => {
   // Make a request to the route and make sure that we are not getting a 404 which indicates the absence of the route
   const response = await request(app).post("/api/tickets").send({});
@@ -87,4 +89,22 @@ it("Tickets POST Route Test: /api/tickets Successfully Create a Ticket when Vali
   expect(tickets.length).toEqual(1);
   expect(tickets[0].title).toEqual(title);
   expect(tickets[0].price).toEqual(price);
+});
+
+it("Tickets POST Route Test: /api/tickets Successfully Publishes a Ticket Created Event When a Ticket is created.", async () => {
+
+  const title = "Sample Ticket";
+  const price = 100.5;
+
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      title: title,
+      price: price,
+    })
+    .expect(201);
+  
+  expect(natsClient.client.publish).toHaveBeenCalled();
+  
 });
