@@ -19,6 +19,24 @@ const startServer = async () => {
     );
   }
 
+  if (!process.env.NATS_URL) {
+    throw new Error(
+      `NATS_URL must be defined in ${SERVICE_NAME} SERVICE !!!`
+    );
+  }
+
+  if (!process.env.NATS_CLUSTER_ID) {
+    throw new Error(
+      `NATS_CLUSTER_ID must be defined in ${SERVICE_NAME} SERVICE !!!`
+    );
+  }
+
+  if (!process.env.NATS_CLIENT_ID) {
+    throw new Error(
+      `NATS_CLIENT_ID must be defined in ${SERVICE_NAME} SERVICE !!!`
+    );
+  }
+
   try {
     // ========================Connecting to Tickets DB========================
     await mongoose.connect(process.env.MONGO_DB_URI);
@@ -28,19 +46,19 @@ const startServer = async () => {
   }
 
   // NATS Client Configuration
-  const NATS_CLUSTER_NAME = "bookmyseat-nats-cluster";
-  const NATS_PUBLISHER_NAME = "TicketsEventPublisher";
-  const NATS_CONNECTION_URL = "http://nats-srv:4222";
+  const NATS_CLUSTER_ID = process.env.NATS_CLUSTER_ID;
+  const NATS_CLIENT_ID = process.env.NATS_CLIENT_ID;
+  const NATS_CONNECTION_URL = process.env.NATS_URL;
 
   try {
     // ========================Connecting to NATS ========================
     await natsClient.connect(
-      NATS_CLUSTER_NAME,
-      NATS_PUBLISHER_NAME,
+      NATS_CLUSTER_ID,
+      NATS_CLIENT_ID,
       NATS_CONNECTION_URL
     );
     console.log(
-      `${SERVICE_NAME} Service Connected to NATS CLUSTER: ${NATS_CLUSTER_NAME} successfully !!!!!`
+      `${SERVICE_NAME} Service Connected to NATS CLUSTER: ${NATS_CLUSTER_ID} successfully !!!!!`
     );
 
     /*
@@ -61,7 +79,7 @@ const startServer = async () => {
     process.on("SIGTERM", () => natsClient.client.close());
   } catch (err) {
     console.error(
-      `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_NAME}:`,
+      `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,
       err
     );
   }
