@@ -4,7 +4,7 @@ import { app } from "../../app";
 
 import { Ticket } from "../../models/ticket";
 
-jest.mock("../../__mocks__/nats-client.ts")
+jest.mock("../../nats-client.ts")
 
 it("Tickets POST Route Test: Has a route handler listening to /api/tickets for POST Requests.", async () => {
   // Make a request to the route and make sure that we are not getting a 404 which indicates the absence of the route
