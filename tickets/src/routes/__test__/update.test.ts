@@ -145,7 +145,7 @@ it("Tickets PUT Route Test: Updates the requested Ticket with valid inputs.", as
     .expect(201);
 
   // Make a request to update the Ticket with valid title and expect a 200 - successful response
-  await request(app)
+  const modifiedTicket = await request(app)
     .put(`/api/tickets/${response.body.id}`)
     .set("Cookie", cookie)
     .send({
@@ -154,14 +154,15 @@ it("Tickets PUT Route Test: Updates the requested Ticket with valid inputs.", as
     })
     .expect(200);
 
-  // Make a request to update the Ticket with invalid title and expect a 400 - Bad Request
-  const modifiedTicket = await request(app)
-    .get(`/api/tickets/${response.body.id}`)
-    .set("Cookie", cookie)
-    .send()
-    .expect(200);
   expect(modifiedTicket.body.title).toEqual(modifiedTicketTitle);
   expect(modifiedTicket.body.price).toEqual(modifiedTicketPrice);
+
+  // Make a request to update the Ticket with invalid title and expect a 400 - Bad Request
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send()
+    .expect(400);
 });
 
 it("Tickets PUT Route Test: /api/tickets Successfully Publishes a Ticket Updated Event When a Ticket is updated.", async () => {
