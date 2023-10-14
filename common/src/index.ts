@@ -11,3 +11,10 @@ export * from "./middlewares/current-user";
 export * from "./middlewares/error-handler";
 export * from "./middlewares/require-auth";
 export * from "./middlewares/validate-request";
+
+// Exporting contents of Events Directory
+export * from "./events/event-base-classes/base-publisher";
+export * from "./events/event-base-classes/base-listener";
+export * from "./events/event-subjects/subjects";
+export * from "./events/event-interfaces/ticket-created-event";
+export * from "./events/event-interfaces/ticket-updated-event";
