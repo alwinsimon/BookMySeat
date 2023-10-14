@@ -10,6 +10,9 @@ declare global {
   var testUserSignUp: () => string[];
 }
 
+// Files to mock
+jest.mock("../nats-client.ts");
+
 let mongo: any; // Declaring it in the beginning to avoid scope issues while using inside different functions.
 
 // This function will be executed before starting the testing process.
@@ -26,6 +29,9 @@ beforeAll(async () => {
 
 // This function is called before each test.
 beforeEach(async () => {
+  // Clearing all related to mock data (function calls etc) before starting each test
+  jest.clearAllMocks();
+
   // Clearing all the collections existing in the DB before next test
   const collections = await mongoose.connection.db.collections();
 
@@ -69,7 +75,8 @@ global.testUserSignUp = () => {
   const sessionJSON = JSON.stringify(session);
 
   // Take JSON and encode it as base64
-  const base64EncodedSessionObject = Buffer.from(sessionJSON).toString("base64");
+  const base64EncodedSessionObject =
+    Buffer.from(sessionJSON).toString("base64");
 
   // Return the base64 encoded string, which can be used as cookie with the data encoded.
   return [`session=${base64EncodedSessionObject}`];
