@@ -9,6 +9,9 @@ import {
 
 import { Ticket } from "../models/ticket";
 
+import { natsClient } from "../nats-client";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+
 const router = express.Router();
 
 router.put(
@@ -40,6 +43,12 @@ router.put(
       price: req.body.price,
     });
     await ticket.save();
+
+    new TicketUpdatedPublisher(natsClient.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+    });
 
     res.send(ticket);
   }
