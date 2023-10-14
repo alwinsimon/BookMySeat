@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 
 import { app } from "../../app";
 
+import { natsClient } from "../../nats-client";
+
 it("Tickets PUT Route Test: Returns 404 if the provided ticket Id dosen't exist in the DB.", async () => {
   // Make a ticket id which is similar to mongodb document id.
   const mockTicketId = new mongoose.Types.ObjectId().toHexString();
@@ -160,4 +162,37 @@ it("Tickets PUT Route Test: Updates the requested Ticket with valid inputs.", as
     .expect(200);
   expect(modifiedTicket.body.title).toEqual(modifiedTicketTitle);
   expect(modifiedTicket.body.price).toEqual(modifiedTicketPrice);
+});
+
+it("Tickets PUT Route Test: /api/tickets Successfully Publishes a Ticket Updated Event When a Ticket is updated.", async () => {
+  const ticketTitle = "Sample Ticket";
+  const ticketPrice = 100;
+
+  const modifiedTicketTitle = "Modified Ticket";
+  const modifiedTicketPrice = 250;
+
+  // Make a cookie to get a consistent user
+  const cookie = global.testUserSignUp();
+
+  // Make a valid request to create a new ticket
+  const response = await request(app)
+    .post(`/api/tickets/`)
+    .set("Cookie", cookie)
+    .send({
+      title: ticketTitle,
+      price: ticketPrice,
+    })
+    .expect(201);
+
+  // Make a request to update the Ticket with valid title and expect a 200 - successful response
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send({
+      title: modifiedTicketTitle,
+      price: modifiedTicketPrice,
+    })
+    .expect(200);
+
+  expect(natsClient.client.publish).toHaveBeenCalled();
 });
