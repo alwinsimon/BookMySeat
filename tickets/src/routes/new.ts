@@ -3,6 +3,8 @@ import { body } from "express-validator";
 import { requireAuth, validateRequest } from "@bookmyseat/common";
 
 import { Ticket } from "../models/ticket";
+import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
+import { natsClient } from "../nats-client";
 
 const router = express.Router();
 
@@ -26,6 +28,14 @@ router.post(
     });
 
     ticket.save();
+
+    // Emit the Ticket Created event to event bus
+    new TicketCreatedPublisher(natsClient.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.status(201).send(ticket);
   }
