@@ -10,6 +10,9 @@ declare global {
   var testUserSignUp: () => string[];
 }
 
+// Files to mock
+jest.mock("../../nats-client.ts");
+
 let mongo: any; // Declaring it in the beginning to avoid scope issues while using inside different functions.
 
 // This function will be executed before starting the testing process.
@@ -69,7 +72,8 @@ global.testUserSignUp = () => {
   const sessionJSON = JSON.stringify(session);
 
   // Take JSON and encode it as base64
-  const base64EncodedSessionObject = Buffer.from(sessionJSON).toString("base64");
+  const base64EncodedSessionObject =
+    Buffer.from(sessionJSON).toString("base64");
 
   // Return the base64 encoded string, which can be used as cookie with the data encoded.
   return [`session=${base64EncodedSessionObject}`];

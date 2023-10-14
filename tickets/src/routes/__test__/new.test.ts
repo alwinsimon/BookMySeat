@@ -4,8 +4,6 @@ import { app } from "../../app";
 
 import { Ticket } from "../../models/ticket";
 
-jest.mock("../../nats-client.ts")
-
 it("Tickets POST Route Test: Has a route handler listening to /api/tickets for POST Requests.", async () => {
   // Make a request to the route and make sure that we are not getting a 404 which indicates the absence of the route
   const response = await request(app).post("/api/tickets").send({});
@@ -74,7 +72,7 @@ it("Tickets POST Route Test: /api/tickets Successfully Create a Ticket when Vali
   expect(tickets.length).toEqual(0);
 
   const title = "Sample Ticket";
-  const price = 100.50;
+  const price = 100.5;
 
   await request(app)
     .post("/api/tickets")
