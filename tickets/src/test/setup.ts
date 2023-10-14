@@ -29,6 +29,9 @@ beforeAll(async () => {
 
 // This function is called before each test.
 beforeEach(async () => {
+  // Clearing all related to mock data (function calls etc) before starting each test
+  jest.clearAllMocks();
+
   // Clearing all the collections existing in the DB before next test
   const collections = await mongoose.connection.db.collections();
 
