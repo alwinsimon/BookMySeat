@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 const router = express.Router();
 
 router.post("/api/orders", async (req: Request, res: Response) => {
-  res.status(201).send({ status: "newOrderRouter" });
+  res.status(201).send({ status: "createOrderRouter" });
 });
 
-export { router as newOrderRouter };
+export { router as createOrderRouter };
