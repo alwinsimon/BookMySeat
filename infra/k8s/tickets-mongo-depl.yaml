@@ -24,7 +24,7 @@ spec:
   selector:
     app: tickets-mongo
   ports:
-    - name: auth-db
+    - name: tickets-db
       protocol: TCP
       port: 27017
       targetPort: 27017
