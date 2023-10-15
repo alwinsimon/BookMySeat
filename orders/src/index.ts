@@ -5,9 +5,9 @@ import { app } from "./app";
 import { natsClient } from "./nats-client";
 
 const startServer = async () => {
-  // Tickets Server Configuration
+  // Server Configuration
   const PORT = 3000;
-  const SERVICE_NAME = "TICKETS";
+  const SERVICE_NAME = "ORDERS";
 
   // Check if ENV Variables exist
   if (!process.env.JWT_KEY) {
@@ -38,7 +38,7 @@ const startServer = async () => {
   }
 
   try {
-    // ========================Connecting to Tickets DB========================
+    // ========================Connecting to DB========================
     await mongoose.connect(process.env.MONGO_DB_URI);
     console.log(`Connected to ${SERVICE_NAME} MongoDB successfully !!!!!`);
   } catch (err) {
@@ -84,7 +84,7 @@ const startServer = async () => {
     );
   }
 
-  // ========================Starting Tickets Server========================
+  // ========================Starting Server========================
   app.listen(PORT, () => {
     console.log(`${SERVICE_NAME} SERVICE listening on PORT: ${PORT} !!!!!`);
   });

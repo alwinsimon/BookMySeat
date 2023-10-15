@@ -5,7 +5,7 @@ import { TicketCreatedListener } from "./events/ticket-created-listener";
 // Generate Random Name for listener so that multiple instances of the same listener can be instantiated.
 const listenerName = "Listner--" + randomBytes(4).toString("hex");
 
-const stan = nats.connect("ticketing", listenerName, {
+const stan = nats.connect("bookmyseat-nats-cluster", listenerName, {
   url: "http://localhost:4222",
 });
 
