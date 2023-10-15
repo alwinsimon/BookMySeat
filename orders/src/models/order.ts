@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
+import { OrderStatus } from "@bookmyseat/common";
 
 // An interface that describes the properties that are required to create a new Order
 interface OrderAttrs {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: string;
   ticket: TicketDoc;
 }
@@ -11,7 +12,7 @@ interface OrderAttrs {
 // An interface that describes the properties that a Order Document has.
 interface OrderDoc extends mongoose.Document {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: string;
   ticket: TicketDoc;
 }
@@ -29,6 +30,10 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+      // Configuring mongoose to make sure that the status has the value specified in the enum
+      enum: Object.values(OrderStatus),
+      // Default value
+      default: OrderStatus.Created,
       required: true,
     },
     expiresAt: {
