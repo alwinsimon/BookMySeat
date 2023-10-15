@@ -15,6 +15,6 @@ export * from "./middlewares/validate-request";
 // Exporting contents of Events Directory
 export * from "./events/event-base-classes/base-publisher";
 export * from "./events/event-base-classes/base-listener";
-export * from "./events/event-subjects/subjects";
+export * from "./events/event-types/ticket-status";
 export * from "./events/event-interfaces/ticket-created-event";
 export * from "./events/event-interfaces/ticket-updated-event";
