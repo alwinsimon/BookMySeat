@@ -1,5 +1,5 @@
 import { Stan } from "node-nats-streaming";
-import { Subjects } from "../event-types/ticket-status";
+import { Subjects } from "../event-subjects";
 
 interface Event {
   subject: Subjects;

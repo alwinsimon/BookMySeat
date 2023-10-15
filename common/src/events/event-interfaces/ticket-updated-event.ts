@@ -1,4 +1,4 @@
-import { Subjects } from "../event-types/ticket-status";
+import { Subjects } from "../event-subjects";
 
 export interface TicketUpdatedEvent {
   subject: Subjects.TicketUpdated;
