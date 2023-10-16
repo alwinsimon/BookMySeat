@@ -10,7 +10,7 @@ import { TicketDoc } from "./ticket";
 interface OrderAttrs {
   userId: string;
   status: OrderStatus;
-  expiresAt: string;
+  expiresAt: Date;
   ticket: TicketDoc;
 }
 
@@ -18,7 +18,7 @@ interface OrderAttrs {
 interface OrderDoc extends mongoose.Document {
   userId: string;
   status: OrderStatus;
-  expiresAt: string;
+  expiresAt: Date;
   ticket: TicketDoc;
 }
 
