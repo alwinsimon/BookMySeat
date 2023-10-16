@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import { OrderStatus } from "@bookmyseat/common";
 
+// Exporting OrderStstus from Order model so that it can be used with a single import statement in other files.
+export { OrderStatus }
+
 import { TicketDoc } from "./ticket";
 
 // An interface that describes the properties that are required to create a new Order
