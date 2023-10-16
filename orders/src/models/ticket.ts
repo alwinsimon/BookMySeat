@@ -61,6 +61,6 @@ ticketSchema.methods.isReserved = async function () {
   return !!existingOrderWithSameTicket;
 };
 
-const Ticket = mongoose.model<TicketDoc, TicketModel>("Order", ticketSchema);
+const Ticket = mongoose.model<TicketDoc, TicketModel>("Ticket", ticketSchema);
 
 export { Ticket };
