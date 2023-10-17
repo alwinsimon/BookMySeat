@@ -5,6 +5,8 @@ import { app } from "../../app";
 
 import { Ticket } from "../../models/ticket";
 
+import { natsClient } from "../../nats-client";
+
 const mockTicketId = new mongoose.Types.ObjectId().toHexString();
 
 it("Orders POST Route Test: Has a route handler listening to /api/orders for POST Requests.", async () => {
@@ -104,4 +106,23 @@ it("Orders POST Route Test: /api/orders Returns a 400 error if the Ticket is alr
   );
 });
 
-it.todo("Test to verify Order Creation Event Publishing logic.");
+it("Orders POST Route Test: /api/orders Verify Order Creation Event Publishing after Successful creation of Order.", async () => {
+  // Create a ticket and save it to DB
+  const ticket = await Ticket.build({
+    title: "Test Ticket",
+    price: 100,
+  });
+  ticket.save();
+  const ticketId = ticket.id;
+
+  // Reserve the ticket by creating a order
+  const order = await request(app)
+    .post("/api/orders")
+    .set("Cookie", global.testUserSignUp())
+    .send({
+      ticketId: ticketId,
+    })
+    .expect(201);
+
+  expect(natsClient.client.publish).toHaveBeenCalled();
+});

@@ -10,6 +10,9 @@ import {
   OrderStatus,
 } from "@bookmyseat/common";
 
+import { natsClient } from "../nats-client";
+import { OrderCreatedPublisher } from "../events/publishers/order-created-publisher";
+
 import { Order } from "../models/order";
 import { Ticket } from "../models/ticket";
 
@@ -63,7 +66,17 @@ router.post(
 
     await order.save();
 
-    // Publishing the event notifying the order creation
+    // Publishing a event notifying other services about the order creation
+    new OrderCreatedPublisher(natsClient.client).publish({
+      id: order.id,
+      status: order.status,
+      userId: order.userId,
+      expiresAt: order.expiresAt.toISOString(),
+      ticket: {
+        id: ticket.id,
+        price: ticket.price,
+      },
+    });
 
     res.status(201).send(order);
   }
