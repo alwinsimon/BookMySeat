@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import { Ticket } from "../../models/ticket";
 import { Order, OrderStatus } from "../../models/order";
 
+import { natsClient } from "../../nats-client";
+
 const mockOrderId = new mongoose.Types.ObjectId().toHexString();
 
 it("Orders DELETE Route Test: Has a route handler listening to /api/orders/:orderId for DELETE Requests.", async () => {
@@ -88,3 +90,33 @@ it("Orders DELETE Route Test: /api/orders/:orderId Returns an error if a user re
 });
 
 it.todo("Test to verify Order Cancelled Event Publishing logic.");
+
+it("Orders DELETE Route Test: /api/orders/:orderId Verify Order Cancelled Event Publishing.", async () => {
+  // Create one tickets and save it to DB
+  const ticket = await Ticket.build({
+    title: "Test Ticket",
+    price: 100,
+  });
+  await ticket.save();
+
+  // Create a user and save the cookies for the user in a variable
+  const user = global.testUserSignUp();
+
+  // Create One Order as User and destructure the response body as order
+  const { body: order } = await request(app)
+    .post("/api/orders")
+    .set("Cookie", user)
+    .send({
+      ticketId: ticket.id,
+    })
+    .expect(201);
+
+  // Make request to cancel the order as the same user with the same orderId
+  await request(app)
+    .delete(`/api/orders/${order.id}`)
+    .set("Cookie", user)
+    .send()
+    .expect(204);
+
+    expect(natsClient.client.publish).toHaveBeenCalled();
+});
