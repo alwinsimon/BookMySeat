@@ -10,6 +10,9 @@ import {
 
 import { Order, OrderStatus } from "../models/order";
 
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
+import { natsClient } from "../nats-client";
+
 const router = express.Router();
 
 router.delete(
@@ -38,6 +41,16 @@ router.delete(
 
     order.status = OrderStatus.Cancelled;
     await order.save();
+
+    // Publishing a event notifying other services about the order cancellation / updation
+    new OrderCancelledPublisher(natsClient.client).publish({
+      id: order.id,
+      ticket: {
+        id: order.ticket.id,
+        price: order.ticket.price
+      }
+    })
+
 
     res.status(204).send(order);
   }
