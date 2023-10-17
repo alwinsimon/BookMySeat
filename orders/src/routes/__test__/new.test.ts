@@ -5,7 +5,6 @@ import { app } from "../../app";
 
 import { Ticket } from "../../models/ticket";
 
-
 const mockTicketId = new mongoose.Types.ObjectId().toHexString();
 
 it("Orders POST Route Test: Has a route handler listening to /api/orders for POST Requests.", async () => {
@@ -105,4 +104,4 @@ it("Orders POST Route Test: /api/orders Returns a 400 error if the Ticket is alr
   );
 });
 
-it.todo("Test to verify Event Publishing logic.")
+it.todo("Test to verify Event Publishing logic.");
