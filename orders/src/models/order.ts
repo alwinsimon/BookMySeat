@@ -1,18 +1,24 @@
 import mongoose from "mongoose";
+import { OrderStatus } from "@bookmyseat/common";
+
+// Exporting OrderStstus from Order model so that it can be used with a single import statement in other files.
+export { OrderStatus }
+
+import { TicketDoc } from "./ticket";
 
 // An interface that describes the properties that are required to create a new Order
 interface OrderAttrs {
   userId: string;
-  status: string;
-  expiresAt: string;
+  status: OrderStatus;
+  expiresAt: Date;
   ticket: TicketDoc;
 }
 
 // An interface that describes the properties that a Order Document has.
 interface OrderDoc extends mongoose.Document {
   userId: string;
-  status: string;
-  expiresAt: string;
+  status: OrderStatus;
+  expiresAt: Date;
   ticket: TicketDoc;
 }
 
@@ -29,6 +35,10 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
+      // Configuring mongoose to make sure that the status has the value specified in the enum
+      enum: Object.values(OrderStatus),
+      // Default value
+      default: OrderStatus.Created,
       required: true,
     },
     expiresAt: {
