@@ -31,10 +31,10 @@ router.get(
       throw new NotFoundError();
     }
 
-    if(order.userId !== req.currentUser!.id){
-      throw new NotAuthorizedError
+    if (order.userId !== req.currentUser!.id) {
+      throw new NotAuthorizedError();
     }
-    
+
     res.status(200).send(order);
   }
 );
