@@ -82,5 +82,3 @@ it("Orders GET Route Test: /api/orders Fetches and returns all the orders of sig
   expect(response.body[0].ticket.id).toEqual(orderTwo.ticket.id);
   expect(response.body[1].ticket.id).toEqual(orderThree.ticket.id);
 });
-
-it.todo("Test to verify Event Publishing logic.");
