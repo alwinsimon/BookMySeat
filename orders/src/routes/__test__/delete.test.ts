@@ -89,8 +89,6 @@ it("Orders DELETE Route Test: /api/orders/:orderId Returns an error if a user re
     .expect(401);
 });
 
-it.todo("Test to verify Order Cancelled Event Publishing logic.");
-
 it("Orders DELETE Route Test: /api/orders/:orderId Verify Order Cancelled Event Publishing.", async () => {
   // Create one tickets and save it to DB
   const ticket = await Ticket.build({
@@ -118,5 +116,5 @@ it("Orders DELETE Route Test: /api/orders/:orderId Verify Order Cancelled Event 
     .send()
     .expect(204);
 
-    expect(natsClient.client.publish).toHaveBeenCalled();
+  expect(natsClient.client.publish).toHaveBeenCalled();
 });
