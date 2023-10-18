@@ -6,7 +6,6 @@ import {
 } from "@bookmyseat/common";
 
 import { Ticket } from "../../models/ticket";
-import { natsClient } from "../../nats-client";
 import { queueGroupName } from "../order-service-queue-group-name";
 
 export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
