@@ -15,16 +15,22 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: TicketCreatedEvent["data"], msg: Message) {
-    // Destructure the ticket title and price from data argument
-    const { title, price } = data;
+    try {
+      // Destructure the ticket id, title, and price from data argument.
+      const { id, title, price } = data;
 
-    // Save the ticket to Database
-    const ticket = Ticket.build({
-      title,
-      price,
-    });
-    await ticket.save();
+      // Save the ticket to the Database.
+      const ticket = Ticket.build({
+        id,
+        title,
+        price,
+      });
+      await ticket.save();
 
-    msg.ack();
+      // Acknowledge the ticketCreated events to NATS server.
+      msg.ack();
+    } catch (error) {
+      console.error("Error processing TicketCreatedEvent", error);
+    }
   }
 }
