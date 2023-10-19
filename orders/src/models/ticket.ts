@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 import { Order, OrderStatus } from "./order";
 
 // An interface that describes the properties that are required to create a new Ticket
@@ -12,6 +13,7 @@ interface TicketAttrs {
 export interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
+  version: number;
   isReserved(): Promise<boolean>;
 }
 
@@ -41,6 +43,12 @@ const ticketSchema = new mongoose.Schema(
     },
   }
 );
+
+// Modifying the default "__v" feild for version control in mongoose with "version"
+ticketSchema.set("versionKey", "version");
+
+// Add the update-if-current plugin to the schema for automatic version based document updations.
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 ticketSchema.statics.build = (attributes: TicketAttrs) => {
   return new Ticket({
