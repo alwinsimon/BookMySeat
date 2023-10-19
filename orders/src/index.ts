@@ -4,6 +4,9 @@ import { app } from "./app";
 
 import { natsClient } from "./nats-client";
 
+import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
+import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
+
 const startServer = async () => {
   // Server Configuration
   const PORT = 3000;
@@ -20,9 +23,7 @@ const startServer = async () => {
   }
 
   if (!process.env.NATS_URL) {
-    throw new Error(
-      `NATS_URL must be defined in ${SERVICE_NAME} SERVICE !!!`
-    );
+    throw new Error(`NATS_URL must be defined in ${SERVICE_NAME} SERVICE !!!`);
   }
 
   if (!process.env.NATS_CLUSTER_ID) {
@@ -77,6 +78,10 @@ const startServer = async () => {
     // Invoking the NATS client close method on the situation where process running receives a SIGINT or SIGTERM message
     process.on("SIGINT", () => natsClient.client.close());
     process.on("SIGTERM", () => natsClient.client.close());
+
+    // Event Listeners Initialization
+    new TicketCreatedListener(natsClient.client).listen();
+    new TicketUpdatedListener(natsClient.client).listen();
   } catch (err) {
     console.error(
       `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,
