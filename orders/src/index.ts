@@ -4,10 +4,13 @@ import { app } from "./app";
 
 import { natsClient } from "./nats-client";
 
+import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
+import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
+
 const startServer = async () => {
-  // Tickets Server Configuration
+  // Server Configuration
   const PORT = 3000;
-  const SERVICE_NAME = "TICKETS";
+  const SERVICE_NAME = "ORDERS";
 
   // Check if ENV Variables exist
   if (!process.env.JWT_KEY) {
@@ -20,9 +23,7 @@ const startServer = async () => {
   }
 
   if (!process.env.NATS_URL) {
-    throw new Error(
-      `NATS_URL must be defined in ${SERVICE_NAME} SERVICE !!!`
-    );
+    throw new Error(`NATS_URL must be defined in ${SERVICE_NAME} SERVICE !!!`);
   }
 
   if (!process.env.NATS_CLUSTER_ID) {
@@ -38,7 +39,7 @@ const startServer = async () => {
   }
 
   try {
-    // ========================Connecting to Tickets DB========================
+    // ========================Connecting to DB========================
     await mongoose.connect(process.env.MONGO_DB_URI);
     console.log(`Connected to ${SERVICE_NAME} MongoDB successfully !!!!!`);
   } catch (err) {
@@ -77,6 +78,10 @@ const startServer = async () => {
     // Invoking the NATS client close method on the situation where process running receives a SIGINT or SIGTERM message
     process.on("SIGINT", () => natsClient.client.close());
     process.on("SIGTERM", () => natsClient.client.close());
+
+    // Event Listeners Initialization
+    new TicketCreatedListener(natsClient.client).listen();
+    new TicketUpdatedListener(natsClient.client).listen();
   } catch (err) {
     console.error(
       `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,
@@ -84,7 +89,7 @@ const startServer = async () => {
     );
   }
 
-  // ========================Starting Tickets Server========================
+  // ========================Starting Server========================
   app.listen(PORT, () => {
     console.log(`${SERVICE_NAME} SERVICE listening on PORT: ${PORT} !!!!!`);
   });

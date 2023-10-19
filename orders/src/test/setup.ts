@@ -1,9 +1,6 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import request from "supertest";
 import jwt from "jsonwebtoken";
-
-import { app } from "../app";
 
 // Declaring the function testUserSignUp to the global scope so that it can be accessed anywhere within this application
 declare global {
