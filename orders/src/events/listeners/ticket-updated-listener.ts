@@ -15,22 +15,24 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
 
   async onMessage(data: TicketUpdatedEvent["data"], msg: Message) {
     try {
-      // Destructure the ticket id, title, and price from data argument.
-      const { id, title, price } = data;
-
       // Find, Update and Save the updated ticket data to the Database.
-      const ticket = await Ticket.findById(id);
+      const ticket = await Ticket.findOne({
+        _id: data.id,
+        version: data.version - 1,
+      });
 
       if (!ticket) {
         throw new Error("Ticket not found !!!");
       }
+
+      // Destructure data from data argument.
+      const { title, price } = data;
 
       ticket.set({ title, price });
       await ticket.save();
 
       // Acknowledge the ticketCreated events to NATS server.
       msg.ack();
-
     } catch (error) {
       console.error("Error processing TicketUpdatedEvent:", error);
     }
