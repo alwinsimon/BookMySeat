@@ -1,4 +1,5 @@
 import request from "supertest";
+import mongoose from "mongoose";
 
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
@@ -26,6 +27,7 @@ it("Orders GET Route Test: /api/orders Fetches and returns all the orders of sig
   // Helper function to build and return a ticket.
   const buildTicket = async () => {
     const ticket = await Ticket.build({
+      id: new mongoose.Types.ObjectId().toHexString(),
       title: "Test Ticket",
       price: 100,
     });

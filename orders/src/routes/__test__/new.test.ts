@@ -59,6 +59,7 @@ it("Orders POST Route Test: /api/orders Returns error if the ticket does not exi
 it("Orders POST Route Test: /api/orders Create a Order and Reserve Ticket if Valid Parameters is provided.", async () => {
   // Create a ticket and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
@@ -78,6 +79,7 @@ it("Orders POST Route Test: /api/orders Create a Order and Reserve Ticket if Val
 it("Orders POST Route Test: /api/orders Returns a 400 error if the Ticket is already Reserved.", async () => {
   // Create a ticket and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
@@ -109,6 +111,7 @@ it("Orders POST Route Test: /api/orders Returns a 400 error if the Ticket is alr
 it("Orders POST Route Test: /api/orders Verify Order Creation Event Publishing after Successful creation of Order.", async () => {
   // Create a ticket and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
