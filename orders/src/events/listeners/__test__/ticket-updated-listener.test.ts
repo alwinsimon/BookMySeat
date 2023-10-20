@@ -55,7 +55,6 @@ it("Ticket Updated Listener Test: Finds and Updates a Ticket in response to Tick
 });
 
 it("Ticket Updated Listener Test: Successfully Acknowledges the event after successfully Updating Ticket.", async () => {
-  // Write assertions to make sure that the .ack() function was called.
   const { listener, data, msg } = await testSetUpHelper();
 
   // Invoke the onMessage function
@@ -63,4 +62,24 @@ it("Ticket Updated Listener Test: Successfully Acknowledges the event after succ
 
   // Write assertions to make sure that the .ack() function was called.
   expect(msg.ack).toHaveBeenCalled();
+});
+
+it("Ticket Updated Listener Test: Prevents Acknowledging the event if the version number is not in sequence.", async () => {
+  const { listener, data, msg, ticket } = await testSetUpHelper();
+
+  // Manually set the version number into a future number by incrementing it
+  data.version = 10;
+
+  // Invoke the onMessage function and expect that msg.ack() function not to be called due to version sequence mismatch.
+  try {
+    await listener.onMessage(data, msg);
+  } catch (err) {
+    console.error(
+      "This error might be logged, even if test is running fine: ",
+      err
+    );
+  }
+
+  // Write assertions to make sure that the .ack() function was NOT called.
+  expect(msg.ack).not.toHaveBeenCalled();
 });
