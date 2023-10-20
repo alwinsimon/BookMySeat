@@ -18,7 +18,7 @@ router.post(
       .withMessage("Valid Price which is greater than 0 is Required"),
   ],
   validateRequest,
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const { title, price } = req.body;
 
     const ticket = Ticket.build({
@@ -27,7 +27,7 @@ router.post(
       userId: req.currentUser!.id,
     });
 
-    ticket.save();
+    await ticket.save();
 
     // Emit the Ticket Created event to event bus
     new TicketCreatedPublisher(natsClient.client).publish({
