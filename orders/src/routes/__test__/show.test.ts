@@ -28,6 +28,7 @@ it("Orders GET Route Test: /api/orders/:orderId can be accessed if the user is S
 it("Orders GET Route Test: /api/orders/:orderId Fetches and returns the requested order of signed-in user.", async () => {
   // Create one tickets and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
@@ -59,6 +60,7 @@ it("Orders GET Route Test: /api/orders/:orderId Fetches and returns the requeste
 it("Orders GET Route Test: /api/orders/:orderId Returns an error if a user request to get another users order.", async () => {
   // Create one tickets and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
