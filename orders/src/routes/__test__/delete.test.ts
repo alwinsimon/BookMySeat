@@ -31,6 +31,7 @@ it("Orders DELETE Route Test: /api/orders/:orderId can be accessed if the user i
 it("Orders DELETE Route Test: /api/orders/:orderId Fetches and cancels the requested order of signed-in user.", async () => {
   // Create one tickets and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
@@ -63,6 +64,7 @@ it("Orders DELETE Route Test: /api/orders/:orderId Fetches and cancels the reque
 it("Orders DELETE Route Test: /api/orders/:orderId Returns an error if a user request to get another users order.", async () => {
   // Create one tickets and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
@@ -92,6 +94,7 @@ it("Orders DELETE Route Test: /api/orders/:orderId Returns an error if a user re
 it("Orders DELETE Route Test: /api/orders/:orderId Verify Order Cancelled Event Publishing.", async () => {
   // Create one tickets and save it to DB
   const ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
     title: "Test Ticket",
     price: 100,
   });
