@@ -45,6 +45,7 @@ router.delete(
     // Publishing a event notifying other services about the order cancellation / updation
     new OrderCancelledPublisher(natsClient.client).publish({
       id: order.id,
+      version: order.version,
       ticket: {
         id: order.ticket.id,
         price: order.ticket.price

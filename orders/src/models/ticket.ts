@@ -20,6 +20,7 @@ export interface TicketDoc extends mongoose.Document {
 // An interface that decribes the properties that a Ticket Model has.
 interface TicketModel extends mongoose.Model<TicketDoc> {
   build(attributes: TicketAttrs): TicketDoc;
+  findByEvent(eventData: { id: string, version: number}): Promise<TicketDoc | null >;
 }
 
 const ticketSchema = new mongoose.Schema(
@@ -55,6 +56,13 @@ ticketSchema.statics.build = (attributes: TicketAttrs) => {
     _id: attributes.id,
     title: attributes.title,
     price: attributes.price,
+  });
+};
+
+ticketSchema.statics.findByEvent = (eventData: { id: string, version: number}) => {
+  return Ticket.findOne({
+    _id: eventData.id,
+    version: eventData.version - 1,
   });
 };
 

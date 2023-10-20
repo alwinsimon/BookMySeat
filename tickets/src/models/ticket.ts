@@ -11,9 +11,10 @@ interface TicketAttrs {
 // An interface that describes the properties that a Ticket Model has after it is created in DB.
 interface TicketDoc extends mongoose.Document {
   title: string;
+  version: number;
   price: number;
   userId: string;
-  version: number;
+  orderId?: string;
 }
 
 // An interface that describes the properties that a Ticket Document has.
@@ -34,6 +35,9 @@ const ticketSchema = new mongoose.Schema(
     userId: {
       type: String,
       required: true,
+    },
+    orderId: {
+      type: String,
     },
   },
   {

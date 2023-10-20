@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
+
 import { OrderStatus } from "@bookmyseat/common";
 
 // Exporting OrderStstus from Order model so that it can be used with a single import statement in other files.
-export { OrderStatus }
+export { OrderStatus };
 
 import { TicketDoc } from "./ticket";
 
@@ -17,6 +19,7 @@ interface OrderAttrs {
 // An interface that describes the properties that a Order Document has.
 interface OrderDoc extends mongoose.Document {
   userId: string;
+  version: number;
   status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
@@ -58,6 +61,12 @@ const orderSchema = new mongoose.Schema(
     },
   }
 );
+
+// Modifying the default "__v" feild for version control in mongoose with "version"
+orderSchema.set("versionKey", "version");
+
+// Add the update-if-current plugin to the schema for automatic version based document updations.
+orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (attributes: OrderAttrs) => {
   return new Order(attributes);
