@@ -5,10 +5,10 @@ import cookieSession from "cookie-session";
 
 import { errorHandler, NotFoundError, currentUser } from "@bookmyseat/common";
 
-import { createTicketRouter } from "./routes/new";
-import { showTicketRouter } from "./routes/show";
-import { indexTicketRouter } from "./routes";
-import { updateTicketRouter } from "./routes/update";
+import { createOrderRouter } from "./routes/new";
+import { showOrderRouter } from "./routes/show";
+import { indexOrderRouter } from "./routes/index";
+import { deleteOrderRouter } from "./routes/delete";
 
 const app = express();
 
@@ -28,10 +28,10 @@ app.use(
 // Check all the request for cookie and if cookie exist, attach a currentUser property (with auth details) to the request object.
 app.use(currentUser);
 
-app.use(createTicketRouter);
-app.use(showTicketRouter);
-app.use(indexTicketRouter);
-app.use(updateTicketRouter);
+app.use(createOrderRouter);
+app.use(showOrderRouter);
+app.use(indexOrderRouter);
+app.use(deleteOrderRouter);
 
 // Resource Not Found Error Configuration
 app.all("*", () => {
