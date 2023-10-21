@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { app } from "../../app";
 
 import { natsClient } from "../../nats-client";
+import { Ticket } from "../../models/ticket";
 
 it("Tickets PUT Route Test: Returns 404 if the provided ticket Id dosen't exist in the DB.", async () => {
   // Make a ticket id which is similar to mongodb document id.
@@ -196,4 +197,53 @@ it("Tickets PUT Route Test: /api/tickets Successfully Publishes a Ticket Updated
     .expect(200);
 
   expect(natsClient.client.publish).toHaveBeenCalled();
+});
+
+it("Tickets PUT Route Test: Rejects the Ticket update if the ticket is Reserved.", async () => {
+  const ticketTitle = "Sample Ticket";
+  const ticketPrice = 100;
+
+  const modifiedTicketTitle = "Modified Ticket";
+  const modifiedTicketPrice = 250;
+
+  // Make a cookie to get a consistent user
+  const cookie = global.testUserSignUp();
+
+  // Make a valid request to create a new ticket
+  const response = await request(app)
+    .post(`/api/tickets/`)
+    .set("Cookie", cookie)
+    .send({
+      title: ticketTitle,
+      price: ticketPrice,
+    })
+    .expect(201);
+
+  // Retrieve the saved Ticket
+  const ticket = await Ticket.findById(response.body.id);
+
+  // Make a order id which is similar to mongodb document id.
+  const mockOrderId = new mongoose.Types.ObjectId().toHexString();
+
+  // Set a order Id to ticket to indicate that the ticket is reserved
+  ticket!.set({ orderId: mockOrderId });
+
+  await ticket!.save();
+
+  // Make a request to update the Ticket with valid title and expect a 400 as the ticket has orderId indicating that it is reserved
+  const modifiedTicket = await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send({
+      title: modifiedTicketTitle,
+      price: modifiedTicketPrice,
+    })
+    .expect(400);
+
+  // Re-fetch the same Ticket
+  const refetchedTicket = await Ticket.findById(response.body.id);
+
+  // Make sure that the Ticket was not modified
+  expect(refetchedTicket!.title).toEqual(ticket!.title);
+  expect(refetchedTicket!.price).toEqual(ticket!.price);
 });

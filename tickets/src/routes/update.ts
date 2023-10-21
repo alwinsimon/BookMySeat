@@ -5,6 +5,7 @@ import {
   validateRequest,
   NotFoundError,
   NotAuthorizedError,
+  BadRequestError,
 } from "@bookmyseat/common";
 
 import { Ticket } from "../models/ticket";
@@ -32,6 +33,11 @@ router.put(
 
     if (!ticket) {
       throw new NotFoundError();
+    }
+
+    if (ticket.orderId) {
+      // If orderId exist for a ticket, then it is being reserved in a order - so prevent editing it any further.
+      throw new BadRequestError("Cannot edit a ticket thats reserved by an order.");
     }
 
     if (ticket.userId !== req.currentUser!.id) {
