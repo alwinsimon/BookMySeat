@@ -68,3 +68,22 @@ it("Order Created Listener Test: Successfully Acknowledges the event after succe
   // Write assertions to make sure that the .ack() function was called.
   expect(msg.ack).toHaveBeenCalled();
 });
+
+it("Order Created Listener Test: Publishes a Ticket Updated Event.", async () => {
+  // Write assertions to make sure that the a ticket updated event is published by Order created listener.
+  // This is to update the version of ticket stored in various services.
+  const { listener, ticket, data, msg } = await testSetUpHelper();
+
+  // Invoke the onMessage function
+  await listener.onMessage(data, msg);
+
+  // Make sure that the publish method was invoked successfully
+  expect(natsClient.client.publish).toHaveBeenCalled();
+
+  // Make sure that the data passed to the publish method is appropriate data
+  const ticketUpdatedData = JSON.parse(
+    (natsClient.client.publish as jest.Mock).mock.calls[0][1]
+  );
+
+  expect(ticketUpdatedData.orderId).toEqual(data.id);
+});
