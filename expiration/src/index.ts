@@ -1,7 +1,7 @@
 import { natsClient } from "./nats-client";
 
 const startServer = async () => {
-  // Tickets Server Configuration
+  // Server Configuration
   const PORT = 3000;
   const SERVICE_NAME = "TICKETS";
 
