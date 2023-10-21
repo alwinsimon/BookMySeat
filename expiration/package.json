@@ -19,6 +19,8 @@
   "license": "ISC",
   "dependencies": {
     "@bookmyseat/common": "^1.0.1",
+    "@types/bull": "^4.10.0",
+    "bull": "^4.11.4",
     "node-nats-streaming": "^0.3.2",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
