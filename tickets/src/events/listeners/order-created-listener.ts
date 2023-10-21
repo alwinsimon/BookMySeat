@@ -4,11 +4,11 @@ import {
   EventSubjects,
   OrderCreatedEvent,
   OrderStatus,
-  NotFoundError,
 } from "@bookmyseat/common";
 
 import { queueGroupName } from "../ticket-service-queue-group-name";
 import { Ticket } from "../../models/ticket";
+import { TicketUpdatedPublisher } from "../publishers/ticket-updated-publisher";
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   readonly subject = EventSubjects.OrderCreated;
@@ -29,6 +29,15 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
     // Save the Ticket to DB
     await ticket.save();
+
+    // Emit new event notifying the ticket updation event associated with the order creation event
+    await new TicketUpdatedPublisher(this.client).publish({
+      id: ticket.id,
+      version: ticket.version,
+      title: ticket.title,
+      price: ticket.price,
+      orderId: ticket.orderId,
+    });
 
     // Acknowledge the event
     msg.ack();
