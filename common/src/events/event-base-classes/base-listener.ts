@@ -12,10 +12,8 @@ export abstract class Listener<T extends Event> {
   abstract queueGroupName: string;
   abstract onMessage(data: T["data"], msg: Message): void;
 
-  // Private properties that can be modified only within this class.
-  private client: Stan;
-
   // Protected properties that can be modified by sub-classes if necessary.
+  protected client: Stan;
   protected ackWait = 5 * 1000; //  Time is in milliseconds.
 
   constructor(client: Stan) {
