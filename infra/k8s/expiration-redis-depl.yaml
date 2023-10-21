@@ -26,5 +26,5 @@ spec:
   ports:
     - name: expiration-db
       protocol: TCP
-      port: 6373
+      port: 6379
       targetPort: 6379
