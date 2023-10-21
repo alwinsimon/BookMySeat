@@ -1,3 +1,4 @@
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 import { natsClient } from "./nats-client";
 
 const startServer = async () => {
@@ -55,13 +56,14 @@ const startServer = async () => {
     process.on("SIGINT", () => natsClient.client.close());
     process.on("SIGTERM", () => natsClient.client.close());
 
+    // Initialize the Event Listeners
+    new OrderCreatedListener(natsClient.client).listen();
   } catch (err) {
     console.error(
       `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,
       err
     );
   }
-
 };
 
 startServer();
