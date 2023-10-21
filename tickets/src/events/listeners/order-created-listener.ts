@@ -30,7 +30,8 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     // Save the Ticket to DB
     await ticket.save();
 
-    // Emit new event notifying the ticket updation event associated with the order creation event
+    // Emit new event notifying the ticket updation event associated with the order creation event.
+    // This is to update the version of ticket stored in various services.
     await new TicketUpdatedPublisher(this.client).publish({
       id: ticket.id,
       version: ticket.version,
