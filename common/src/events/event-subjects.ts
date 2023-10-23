@@ -4,4 +4,5 @@ export enum EventSubjects {
 
   OrderCreated = "order:created",
   OrderCancelled = "order:cancelled",
+  OrderExpired = "order:expired",
 }
