@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import { Message } from "node-nats-streaming";
-import { OrderCreatedEvent, OrderStatus } from "@bookmyseat/common";
+import { OrderCancelledEvent, OrderStatus } from "@bookmyseat/common";
 
-import { OrderCreatedListener } from "../order-created-listener";
+import { OrderCancelledListener } from "../order-cancelled-listener";
 import { natsClient } from "../../../nats-client";
 import { Ticket } from "../../../models/ticket";
 
@@ -11,7 +11,7 @@ const mockUserId = new mongoose.Types.ObjectId().toHexString();
 
 const testSetUpHelper = async () => {
   // Create an instance of the listener.
-  const listener = new OrderCreatedListener(natsClient.client);
+  const listener = new OrderCancelledListener(natsClient.client);
 
   // Create and Save a Ticket.
   const ticket = Ticket.build({
@@ -20,15 +20,14 @@ const testSetUpHelper = async () => {
     userId: mockUserId,
   });
 
+  ticket.set({ orderId: mockOrderId });
+
   await ticket.save();
 
   // Create a fake data event.
-  const data: OrderCreatedEvent["data"] = {
+  const data: OrderCancelledEvent["data"] = {
     id: mockOrderId,
     version: 0,
-    status: OrderStatus.Created,
-    userId: mockUserId,
-    expiresAt: "Some-String",
     ticket: {
       id: ticket.id,
       price: ticket.price,
@@ -42,23 +41,23 @@ const testSetUpHelper = async () => {
     ack: jest.fn(),
   };
 
-  return { listener, ticket, data, msg };
+  return { listener, ticket, data, msg, mockOrderId };
 };
 
-it("Order Created Listener Test: Set the OrderId of the Ordered Ticket in response to Order Created Event.", async () => {
-  const { listener, ticket, data, msg } = await testSetUpHelper();
+it("Order Cancelled Listener Test: Set the OrderId of the cancelled Ticket to undefined in response to Order Cancelled Event.", async () => {
+  const { listener, ticket, data, msg, mockOrderId } = await testSetUpHelper();
 
   // Invoke the onMessage function with the Data object and Message object.
   await listener.onMessage(data, msg);
 
   // Write assertions to make sure that a Ticket was created
-  const updatedTicket = await Ticket.findById(data.ticket.id);
+  const updatedTicket = await Ticket.findById(ticket.id);
 
   expect(updatedTicket).toBeDefined();
-  expect(updatedTicket!.orderId).toEqual(data.id);
+  expect(updatedTicket!.orderId).not.toBeDefined();
 });
 
-it("Order Created Listener Test: Successfully Acknowledges the event after successfully Saving Order Id to Ticket.", async () => {
+it("Order Cancelled Listener Test: Successfully Acknowledges the event after successfully Removing Order Id of the Ticket.", async () => {
   // Write assertions to make sure that the .ack() function was called.
   const { listener, data, msg } = await testSetUpHelper();
 
@@ -69,7 +68,7 @@ it("Order Created Listener Test: Successfully Acknowledges the event after succe
   expect(msg.ack).toHaveBeenCalled();
 });
 
-it("Order Created Listener Test: Publishes a Ticket Updated Event.", async () => {
+it("Order Cancelled Listener Test: Publishes a Ticket Updated Event.", async () => {
   // Write assertions to make sure that the a ticket updated event is published by Order created listener.
   // This is to update the version of ticket stored in various services.
   const { listener, ticket, data, msg } = await testSetUpHelper();
@@ -80,10 +79,4 @@ it("Order Created Listener Test: Publishes a Ticket Updated Event.", async () =>
   // Make sure that the publish method was invoked successfully
   expect(natsClient.client.publish).toHaveBeenCalled();
 
-  // Make sure that the data passed to the publish method is appropriate data
-  const ticketUpdatedData = JSON.parse(
-    (natsClient.client.publish as jest.Mock).mock.calls[0][1]
-  );
-
-  expect(ticketUpdatedData.orderId).toEqual(data.id);
 });
