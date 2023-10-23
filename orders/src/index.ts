@@ -6,6 +6,7 @@ import { natsClient } from "./nats-client";
 
 import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
 import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
+import { OrderExpirationListener } from "./events/listeners/expiration-complete-listener";
 
 const startServer = async () => {
   // Server Configuration
@@ -82,6 +83,7 @@ const startServer = async () => {
     // Event Listeners Initialization
     new TicketCreatedListener(natsClient.client).listen();
     new TicketUpdatedListener(natsClient.client).listen();
+    new OrderExpirationListener(natsClient.client).listen();
   } catch (err) {
     console.error(
       `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,
