@@ -11,7 +11,7 @@ import { queueGroupName } from "../order-service-queue-group-name";
 import { OrderCancelledPublisher } from "../publishers/order-cancelled-publisher";
 import { natsClient } from "../../nats-client";
 
-export class OrderCancelledListener extends Listener<OrderExpiredEvent> {
+export class OrderExpirationListener extends Listener<OrderExpiredEvent> {
   readonly subject = EventSubjects.OrderExpired;
 
   queueGroupName = queueGroupName;
