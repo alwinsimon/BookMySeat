@@ -9,8 +9,15 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
-    // Process the data
-    await expirationQueue.add({ orderId: data.id });
+    // Calculate the delay time (in Millie seconds) based on the expiresAt value received in event data.
+    const delayBeforePublishingEvent =
+      new Date(data.expiresAt).getTime() - new Date().getTime();
+
+    // Add a new job to expiration queue for sending it to redis server for holding till delay time expiration
+    await expirationQueue.add(
+      { orderId: data.id },
+      { delay: delayBeforePublishingEvent }
+    );
 
     // Acknowledge the event
     msg.ack();
