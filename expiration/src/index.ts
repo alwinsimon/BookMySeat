@@ -4,7 +4,7 @@ import { natsClient } from "./nats-client";
 const startServer = async () => {
   // Server Configuration
   const PORT = 3000;
-  const SERVICE_NAME = "TICKETS";
+  const SERVICE_NAME = "EXPIRATION";
 
   // Check if ENV Variables exist
   if (!process.env.NATS_URL) {
