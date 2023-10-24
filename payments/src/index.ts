@@ -4,14 +4,12 @@ import { app } from "./app";
 
 import { natsClient } from "./nats-client";
 
-import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
-import { OrderExpirationListener } from "./events/listeners/expiration-complete-listener";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 
 const startServer = async () => {
-  // Server Configuration
+  // Tickets Server Configuration
   const PORT = 3000;
-  const SERVICE_NAME = "ORDERS";
+  const SERVICE_NAME = "PAYMENTS";
 
   // Check if ENV Variables exist
   if (!process.env.JWT_KEY) {
@@ -40,7 +38,7 @@ const startServer = async () => {
   }
 
   try {
-    // ========================Connecting to DB========================
+    // ========================Connecting to Tickets DB========================
     await mongoose.connect(process.env.MONGO_DB_URI);
     console.log(`Connected to ${SERVICE_NAME} MongoDB successfully !!!!!`);
   } catch (err) {
@@ -81,9 +79,7 @@ const startServer = async () => {
     process.on("SIGTERM", () => natsClient.client.close());
 
     // Event Listeners Initialization
-    new TicketCreatedListener(natsClient.client).listen();
-    new TicketUpdatedListener(natsClient.client).listen();
-    new OrderExpirationListener(natsClient.client).listen();
+    new OrderCreatedListener(natsClient.client).listen();
   } catch (err) {
     console.error(
       `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,
@@ -91,7 +87,7 @@ const startServer = async () => {
     );
   }
 
-  // ========================Starting Server========================
+  // ========================Starting Tickets Server========================
   app.listen(PORT, () => {
     console.log(`${SERVICE_NAME} SERVICE listening on PORT: ${PORT} !!!!!`);
   });
