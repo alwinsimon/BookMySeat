@@ -7,7 +7,7 @@ import { natsClient } from "./nats-client";
 const startServer = async () => {
   // Tickets Server Configuration
   const PORT = 3000;
-  const SERVICE_NAME = "TICKETS";
+  const SERVICE_NAME = "PAYMENTS";
 
   // Check if ENV Variables exist
   if (!process.env.JWT_KEY) {
