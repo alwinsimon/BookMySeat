@@ -21,7 +21,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent> {
       version: data.version - 1,
     });
 
-    // If no ticket exists, throw an error
+    // If no order exists, throw an error
     if (!order) {
       throw new Error("Order not found !!!");
     }
