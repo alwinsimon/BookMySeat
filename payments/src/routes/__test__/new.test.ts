@@ -5,6 +5,7 @@ import { app } from "../../app";
 
 import { natsClient } from "../../nats-client";
 import { Order, OrderStatus } from "../../models/order";
+import { stripe } from "../../stripe-config";
 
 const mockOrderId = new mongoose.Types.ObjectId().toHexString();
 const mockUserId = new mongoose.Types.ObjectId().toHexString();
@@ -80,7 +81,6 @@ it("Payments POST Route Test: /api/payments Returns 401 if the ticket does not b
 });
 
 it("Payments POST Route Test: /api/payments Returns a 400 if the requested order is cancelled already.", async () => {
-
   // Create a order with mockUserId and status as cancelled
   const order = Order.build({
     id: mockOrderId,
@@ -97,4 +97,29 @@ it("Payments POST Route Test: /api/payments Returns a 400 if the requested order
     .set("Cookie", global.testUserSignUp(mockUserId))
     .send({ token: mockTokenString, orderId: order.id })
     .expect(400);
+});
+
+it("Payments POST Route Test: /api/payments Returns a 204 with valid inputs, Indicating order-payment created.", async () => {
+  // Create a order with mockUserId and status as cancelled
+  const order = Order.build({
+    id: mockOrderId,
+    version: 0,
+    status: OrderStatus.Created,
+    userId: mockUserId,
+    price: 369,
+  });
+  await order.save();
+
+  // Try to generate a payment for the above created cancelled order as the SAME user (use mockUserId in testUserSignUp)
+  const response = await request(app)
+    .post("/api/payments")
+    .set("Cookie", global.testUserSignUp(mockUserId))
+    .send({ token: "tok_amex", orderId: order.id })
+    .expect(201);
+
+  const paymentOptions = (stripe.paymentIntents.create as jest.Mock).mock
+    .calls[0][0];
+
+  expect(paymentOptions.amount).toEqual(order.price * 100);
+  expect(paymentOptions.currency).toEqual("inr");
 });
