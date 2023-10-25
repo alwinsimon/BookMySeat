@@ -1,28 +1,12 @@
-import mongoose from "mongoose";
-
-import { app } from "./app";
-
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 import { natsClient } from "./nats-client";
-
-import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
-import { OrderExpirationListener } from "./events/listeners/expiration-complete-listener";
 
 const startServer = async () => {
   // Server Configuration
   const PORT = 3000;
-  const SERVICE_NAME = "ORDERS";
+  const SERVICE_NAME = "EXPIRATION";
 
   // Check if ENV Variables exist
-  if (!process.env.JWT_KEY) {
-    throw new Error(`JWT_KEY must be defined in ${SERVICE_NAME} SERVICE !!!`);
-  }
-  if (!process.env.MONGO_DB_URI) {
-    throw new Error(
-      `MONGO_DB_URI must be defined in ${SERVICE_NAME} SERVICE !!!`
-    );
-  }
-
   if (!process.env.NATS_URL) {
     throw new Error(`NATS_URL must be defined in ${SERVICE_NAME} SERVICE !!!`);
   }
@@ -37,14 +21,6 @@ const startServer = async () => {
     throw new Error(
       `NATS_CLIENT_ID must be defined in ${SERVICE_NAME} SERVICE !!!`
     );
-  }
-
-  try {
-    // ========================Connecting to DB========================
-    await mongoose.connect(process.env.MONGO_DB_URI);
-    console.log(`Connected to ${SERVICE_NAME} MongoDB successfully !!!!!`);
-  } catch (err) {
-    console.error(`Error Connecting to ${SERVICE_NAME} DB:`, err);
   }
 
   // NATS Client Configuration
@@ -80,21 +56,14 @@ const startServer = async () => {
     process.on("SIGINT", () => natsClient.client.close());
     process.on("SIGTERM", () => natsClient.client.close());
 
-    // Event Listeners Initialization
-    new TicketCreatedListener(natsClient.client).listen();
-    new TicketUpdatedListener(natsClient.client).listen();
-    new OrderExpirationListener(natsClient.client).listen();
+    // Initialize the Event Listeners
+    new OrderCreatedListener(natsClient.client).listen();
   } catch (err) {
     console.error(
       `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,
       err
     );
   }
-
-  // ========================Starting Server========================
-  app.listen(PORT, () => {
-    console.log(`${SERVICE_NAME} SERVICE listening on PORT: ${PORT} !!!!!`);
-  });
 };
 
 startServer();
