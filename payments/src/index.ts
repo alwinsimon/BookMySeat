@@ -38,6 +38,12 @@ const startServer = async () => {
     );
   }
 
+  if (!process.env.STRIPE_KEY) {
+    throw new Error(
+      `STRIPE_KEY (Private API KEY) must be defined in ${SERVICE_NAME} SERVICE !!!`
+    );
+  }
+
   try {
     // ========================Connecting to Tickets DB========================
     await mongoose.connect(process.env.MONGO_DB_URI);

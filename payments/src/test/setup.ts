@@ -7,11 +7,12 @@ import { app } from "../app";
 
 // Declaring the function testUserSignUp to the global scope so that it can be accessed anywhere within this application
 declare global {
-  var testUserSignUp: () => string[];
+  var testUserSignUp: (id?: string) => string[];
 }
 
 // Files to mock
 jest.mock("../nats-client.ts");
+jest.mock("../stripe-config.ts");
 
 let mongo: any; // Declaring it in the beginning to avoid scope issues while using inside different functions.
 
@@ -53,7 +54,7 @@ afterAll(async () => {
 
 // Create a global function to be used in tests for sign-up a test user and get a cookie to be used in the test
 // This avoids repetition of sign-up logic in multiple tests for obtaining cookie for authenticated user test.
-global.testUserSignUp = () => {
+global.testUserSignUp = (id?: string) => {
   /*
     This function will mimmic the cookie creation by Auth Service and will return a string.
     This string can be used as the cookie for authentication in test environment.
@@ -61,7 +62,7 @@ global.testUserSignUp = () => {
 
   // Build a Payload with { id, email } to create a JWT
   const payload = {
-    id: new mongoose.Types.ObjectId().toHexString(),
+    id: id || new mongoose.Types.ObjectId().toHexString(),
     email: "tester@test.com",
   };
 
