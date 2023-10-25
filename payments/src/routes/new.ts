@@ -9,6 +9,7 @@ import {
   OrderStatus,
 } from "@bookmyseat/common";
 import { Order } from "../models/order";
+import { stripe } from "../stripe-config";
 
 const router = express.Router();
 
@@ -37,6 +38,12 @@ router.post(
     if (order.status === OrderStatus.Cancelled) {
       throw new BadRequestError("Cannot create a payment for cancelled order.");
     }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: order.price * 100,
+      currency: "inr",
+      automatic_payment_methods: { enabled: true },
+    });
 
     res.status(201).send({ chargeCreation: "Success" });
   }
