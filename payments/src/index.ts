@@ -4,6 +4,9 @@ import { app } from "./app";
 
 import { natsClient } from "./nats-client";
 
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
+
 const startServer = async () => {
   // Tickets Server Configuration
   const PORT = 3000;
@@ -75,6 +78,10 @@ const startServer = async () => {
     // Invoking the NATS client close method on the situation where process running receives a SIGINT or SIGTERM message
     process.on("SIGINT", () => natsClient.client.close());
     process.on("SIGTERM", () => natsClient.client.close());
+
+    // Event Listeners Initialization
+    new OrderCreatedListener(natsClient.client).listen();
+    new OrderCancelledListener(natsClient.client).listen();
   } catch (err) {
     console.error(
       `Error Connecting ${SERVICE_NAME} Service to NATS CLUSTER: ${NATS_CLUSTER_ID}:`,

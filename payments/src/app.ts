@@ -5,6 +5,9 @@ import cookieSession from "cookie-session";
 
 import { errorHandler, NotFoundError, currentUser } from "@bookmyseat/common";
 
+// Importing routes
+import { createChargeRouter } from "./routes/new";
+
 const app = express();
 
 // Configuring express app to trust proxied requests from ingress-nginx.
@@ -22,6 +25,9 @@ app.use(
 
 // Check all the request for cookie and if cookie exist, attach a currentUser property (with auth details) to the request object.
 app.use(currentUser);
+
+// Invoking routes
+app.use(createChargeRouter);
 
 // Resource Not Found Error Configuration
 app.all("*", () => {
