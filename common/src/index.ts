@@ -23,5 +23,6 @@ export * from "./events/event-interfaces/ticket-updated-event";
 export * from "./events/event-interfaces/order-created-event";
 export * from "./events/event-interfaces/order-cancelled-event";
 export * from "./events/event-interfaces/order-expired-event";
+export * from "./events/event-interfaces/payment-created-event";
 
 export * from "./events/custom-types/order-status";
