@@ -10,6 +10,7 @@ import {
 } from "@bookmyseat/common";
 import { Order } from "../models/order";
 import { stripe } from "../stripe-config";
+import { Payment } from "../models/payment";
 
 const router = express.Router();
 
@@ -44,6 +45,13 @@ router.post(
       currency: "inr",
       automatic_payment_methods: { enabled: true },
     });
+
+    const paymentRecord = Payment.build({
+      orderId: order.id,
+      stripeId: paymentIntent.id,
+    });
+
+    await paymentRecord.save();
 
     res.status(201).send({ chargeCreation: "Success" });
   }
