@@ -6,6 +6,7 @@ import { app } from "../../app";
 import { natsClient } from "../../nats-client";
 import { Order, OrderStatus } from "../../models/order";
 import { stripe } from "../../stripe-config";
+import { Payment } from "../../models/payment";
 
 const mockOrderId = new mongoose.Types.ObjectId().toHexString();
 const mockUserId = new mongoose.Types.ObjectId().toHexString();
@@ -122,4 +123,9 @@ it("Payments POST Route Test: /api/payments Returns a 204 with valid inputs, Ind
 
   expect(paymentOptions.amount).toEqual(order.price * 100);
   expect(paymentOptions.currency).toEqual("inr");
+
+  // Make sure that the payment data is stored into the Payment DataBase
+  const paymentRecord = await Payment.findOne({ orderId: order.id });
+
+  expect(paymentRecord).not.toBeNull();
 });
