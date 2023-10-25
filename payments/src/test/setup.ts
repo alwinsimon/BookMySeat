@@ -12,6 +12,7 @@ declare global {
 
 // Files to mock
 jest.mock("../nats-client.ts");
+jest.mock("../stripe-config.ts");
 
 let mongo: any; // Declaring it in the beginning to avoid scope issues while using inside different functions.
 
