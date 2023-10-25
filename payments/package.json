@@ -32,6 +32,7 @@
     "mongoose-update-if-current": "^1.4.0",
     "node-nats-streaming": "^0.3.2",
     "nodemon": "^3.0.1",
+    "stripe": "^14.1.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
