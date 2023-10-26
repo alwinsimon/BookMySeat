@@ -4,13 +4,13 @@ import { json } from "body-parser";
 
 import cookieSession from "cookie-session";
 
+import { errorHandler, NotFoundError } from "@bookmyseat/common";
+
 import { currentUserRouter } from "./routes/current-user";
 import { signInRouter } from "./routes/signIn";
 import { signOutRouter } from "./routes/signOut";
 import { signUpRouter } from "./routes/signUp";
 
-import { NotFoundError } from "./errors/not-found-error";
-import { errorHandler } from "./middlewares/error-handler";
 
 const app = express();
 
