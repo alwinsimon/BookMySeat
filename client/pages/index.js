@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 const IndexPage = ({ currentUser, tickets }) => {
   if (!currentUser) {
     return (
@@ -16,6 +18,11 @@ const IndexPage = ({ currentUser, tickets }) => {
         <tr key={ticket.id}>
           <td>{ticket.title}</td>
           <td>{ticket.price}</td>
+          <td>
+            <Link href="/tickets/[ticketId]" as={`/tickets/${ticket.id}`}>
+              View
+            </Link>
+          </td>
         </tr>
       );
     });
@@ -31,6 +38,7 @@ const IndexPage = ({ currentUser, tickets }) => {
           <tr>
             <th>Title</th>
             <th>Price</th>
+            <th>Action</th>
           </tr>
         </thead>
 
