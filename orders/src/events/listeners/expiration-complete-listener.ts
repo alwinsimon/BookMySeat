@@ -25,6 +25,11 @@ export class OrderExpirationListener extends Listener<OrderExpiredEvent> {
         throw new Error("Order not found !!!");
       }
 
+      // If the order is already paid and marked complete, return early and acknowledge the event to NATS.
+      if (order.status === OrderStatus.Complete) {
+        return msg.ack();
+      }
+
       order.set({ status: OrderStatus.Cancelled });
       await order.save();
 
