@@ -1,4 +1,4 @@
-const IndexPage = ({ currentUser }) => {
+const IndexPage = ({ currentUser, tickets }) => {
   if (!currentUser) {
     return (
       <>
@@ -9,17 +9,40 @@ const IndexPage = ({ currentUser }) => {
     );
   }
 
+  let ticketList;
+  if (currentUser) {
+    ticketList = tickets.map((ticket) => {
+      return (
+        <tr key={ticket.id}>
+          <td>{ticket.title}</td>
+          <td>{ticket.price}</td>
+        </tr>
+      );
+    });
+  }
+
   return (
     <>
-      <h1>Landing Page</h1>
-      <br />
       <h5>Welcome {currentUser.email}</h5>
+
+      <h1>Tickets</h1>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+
+        <tbody>{currentUser && ticketList}</tbody>
+      </table>
     </>
   );
 };
 
 IndexPage.getInitialProps = async (context, client, currentUser) => {
-  return {};
+  const { data } = await client.get("/api/tickets");
+  return { tickets: data };
 };
 
 export default IndexPage;
