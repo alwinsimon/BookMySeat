@@ -12,7 +12,7 @@ const OrderShow = ({ order, currentUser }) => {
       orderId: order.id,
     },
     onSuccess: (payment) => {
-      Router.push("/");
+      Router.push("/orders");
     },
   });
 
