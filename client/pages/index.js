@@ -18,7 +18,7 @@ const IndexPage = ({ currentUser }) => {
   );
 };
 
-IndexPage.getInitialProps = async (context) => {
+IndexPage.getInitialProps = async (context, client, currentUser) => {
   return {};
 };
 
