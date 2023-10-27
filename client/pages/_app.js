@@ -20,7 +20,11 @@ AppComponent.getInitialProps = async (appContext) => {
     // If the child component has getInitialProps method, then execute it manually from here.
     let pageProps = {};
     if (appContext.Component.getInitialProps) {
-      pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+      pageProps = await appContext.Component.getInitialProps(
+        appContext.ctx,
+        client,
+        data.currentUser
+      );
     }
 
     return { pageProps, currentUser: response.data.currentUser };
