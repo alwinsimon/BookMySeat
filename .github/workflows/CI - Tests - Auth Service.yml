@@ -5,7 +5,7 @@ name: CI - Tests - Auth Service
 on: pull_request
 
 jobs:
-  Production-Branch-Pre-Integration-Tests:
+  Auth-Service-Pre-Integration-Tests:
     runs-on: ubuntu-latest
 
     steps:
