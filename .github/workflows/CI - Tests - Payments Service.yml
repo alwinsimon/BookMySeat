@@ -2,7 +2,10 @@
 
 name: CI - Tests - Payments Service
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - "payments/**"
 
 jobs:
   Payments-Service-Pre-Integration-Tests:

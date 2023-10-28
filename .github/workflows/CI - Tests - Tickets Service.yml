@@ -2,7 +2,10 @@
 
 name: CI - Tests - Tickets Service
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - "tickets/**"
 
 jobs:
   Tickets-Service-Pre-Integration-Tests:
