@@ -1,0 +1,13 @@
+# ========================================= CI - Tests - Payments Service =========================================
+
+name: CI - Tests - Payments Service
+
+on: pull_request
+
+jobs:
+  Payments-Service-Pre-Integration-Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: cd payments && npm install && npm run test:ci
