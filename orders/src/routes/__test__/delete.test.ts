@@ -17,7 +17,7 @@ it("Orders DELETE Route Test: Has a route handler listening to /api/orders/:orde
 
 it("Orders DELETE Route Test: /api/orders/:orderId can only be accessed only if the user is Signed-In.", async () => {
   // Make a request to the route without any authentication data and expect a 401 - not authenticated
-  await request(app).delete(`/api/orders/${mockOrderId}`).expect(404);
+  await request(app).delete(`/api/orders/${mockOrderId}`).expect(401);
 });
 
 it("Orders DELETE Route Test: /api/orders/:orderId can be accessed if the user is Signed-In.", async () => {
