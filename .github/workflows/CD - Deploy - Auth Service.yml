@@ -1,0 +1,23 @@
+# ========================================= CD - Deploy - Auth Service =========================================
+
+name: CD - Deploy - Auth Service
+
+on:
+  push:
+    branches:
+      - production
+    paths:
+      - "auth/**"
+
+jobs:
+  Auth-Service-CD-Pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: cd auth && docker build -t alwinsimon/bookmyseat-auth .
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push alwinsimon/bookmyseat-auth
