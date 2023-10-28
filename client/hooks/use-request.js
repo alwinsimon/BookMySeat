@@ -4,11 +4,11 @@ import axios from "axios";
 export default ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
-  const makeRequest = async () => {
+  const makeRequest = async (props={}) => {
     try {
       setErrors(null); // Setting error to null initially to prevent errors from being displayed always.
 
-      const response = await axios[method](url, body);
+      const response = await axios[method](url, {...body, ...props});
 
       // If the call back exist, then return the call back with response data.
       if (onSuccess) {
