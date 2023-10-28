@@ -11,7 +11,7 @@ it("Current-User Route Test: Check for Valid User Data Return - Returns current 
     .get("/api/users/currentuser")
     .set("Cookie", cookieFromSignUp)
     .send()
-    .expect(400);
+    .expect(200);
   expect(response.body.currentUser.email).toEqual("tester@test.com");
 });
 
