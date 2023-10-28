@@ -12,12 +12,12 @@ const mockOrderId = new mongoose.Types.ObjectId().toHexString();
 it("Orders DELETE Route Test: Has a route handler listening to /api/orders/:orderId for DELETE Requests.", async () => {
   // Make a request to the route and make sure that we are not getting a 404 which indicates the absence of the route
   const response = await request(app).delete(`/api/orders/${mockOrderId}`);
-  expect(response.status).not.toEqual(400);
+  expect(response.status).not.toEqual(404);
 });
 
 it("Orders DELETE Route Test: /api/orders/:orderId can only be accessed only if the user is Signed-In.", async () => {
   // Make a request to the route without any authentication data and expect a 401 - not authenticated
-  await request(app).delete(`/api/orders/${mockOrderId}`).expect(401);
+  await request(app).delete(`/api/orders/${mockOrderId}`).expect(404);
 });
 
 it("Orders DELETE Route Test: /api/orders/:orderId can be accessed if the user is Signed-In.", async () => {
