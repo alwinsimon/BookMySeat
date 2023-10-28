@@ -1,0 +1,16 @@
+# ========================================= CI - Tests - Auth Service =========================================
+
+name: CI - Tests - Auth Service
+
+on:
+  pull_request:
+    paths:
+      - "auth/**"
+
+jobs:
+  Auth-Service-Pre-Integration-Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: cd auth && npm install && npm run test:ci
