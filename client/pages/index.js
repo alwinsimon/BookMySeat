@@ -6,7 +6,7 @@ const IndexPage = ({ currentUser, tickets }) => {
       <>
         <h1>Landing Page</h1>
         <br />
-        <h5>Signed Out</h5>
+        <h5>Signed Out.</h5>
       </>
     );
   }
