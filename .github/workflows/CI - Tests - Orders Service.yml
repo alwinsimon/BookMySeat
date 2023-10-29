@@ -1,0 +1,16 @@
+# ========================================= CI - Tests - Orders Service =========================================
+
+name: CI - Tests - Orders Service
+
+on:
+  pull_request:
+    paths:
+      - "orders/**"
+
+jobs:
+  Orders-Service-Pre-Integration-Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: cd orders && npm install && npm run test:ci

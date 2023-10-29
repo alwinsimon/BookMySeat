@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import { app } from "./app";
 
 const startServer = async () => {
-  
   const PORT = 3000;
   const SERVICE_NAME = "AUTH";
 
