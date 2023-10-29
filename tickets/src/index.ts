@@ -8,7 +8,6 @@ import { OrderCreatedListener } from "./events/listeners/order-created-listener"
 import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
 
 const startServer = async () => {
-  console.log("Starting up............");
   // Tickets Server Configuration
   const PORT = 3000;
   const SERVICE_NAME = "TICKETS";

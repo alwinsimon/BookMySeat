@@ -10,7 +10,6 @@ import { OrderExpirationListener } from "./events/listeners/expiration-complete-
 import { PaymentCreatedListener } from "./events/listeners/payment-created-listener";
 
 const startServer = async () => {
-  console.log("Starting up............");
   // Server Configuration
   const PORT = 3000;
   const SERVICE_NAME = "ORDERS";
