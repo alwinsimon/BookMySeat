@@ -2,6 +2,7 @@ import { OrderCreatedListener } from "./events/listeners/order-created-listener"
 import { natsClient } from "./nats-client";
 
 const startServer = async () => {
+  console.log("Starting up............");
   // Server Configuration
   const PORT = 3000;
   const SERVICE_NAME = "EXPIRATION";
