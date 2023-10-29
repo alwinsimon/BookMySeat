@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
-    - host: www.bms.alwinsimon.com
+    - host: bms.alwinsimon.com
       http:
         paths:
           - path: /api/users/?(.*)
@@ -51,7 +51,7 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: 'true'
-    service.beta.kubernetes.io/do-loadbalancer-hostname: 'www.bms.alwinsimon.com'
+    service.beta.kubernetes.io/do-loadbalancer-hostname: 'bms.alwinsimon.com'
   labels:
     helm.sh/chart: ingress-nginx-2.0.3
     app.kubernetes.io/name: ingress-nginx
