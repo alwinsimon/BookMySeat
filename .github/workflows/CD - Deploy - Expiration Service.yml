@@ -1,31 +1,31 @@
-# ========================================= CD - Deploy - Auth Service =========================================
+# ========================================= CD - Deploy - Expiration Service =========================================
 
-name: CD - Deploy - Auth Service
+name: CD - Deploy - Expiration Service
 
 on:
   push:
     branches:
       - production
     paths:
-      - "auth/**"
+      - "expiration/**"
 
 jobs:
-  Auth-Service-CD-Pipeline:
+  Expiration-Service-CD-Pipeline:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3      
-      # Build Image and push to Docker registry 
-      - run: cd auth && docker build -t alwinsimon/bookmyseat-auth .
+      - uses: actions/checkout@v3
+      # Build Image and push to Docker registry
+      - run: cd expiration && docker build -t alwinsimon/bookmyseat-expiration .
       - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker push alwinsimon/bookmyseat-auth
+      - run: docker push alwinsimon/bookmyseat-expiration
 
       # Restart Deployment in K8s cluster deployed in Digital Ocean
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_ID }}
-      - run: kubectl rollout restart deployment auth-depl
+      - run: kubectl rollout restart deployment expiration-depl

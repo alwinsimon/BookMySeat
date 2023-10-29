@@ -18,5 +18,5 @@ jobs:
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - run: doctl kubernetes cluster kubeconfig save bookmyseat-k8s
-      - run: kubectl apply -f infra/k8s
+      - run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_ID }}
+      - run: kubectl apply -f infra/k8s && kubectl apply -f infra/k8s-prod
