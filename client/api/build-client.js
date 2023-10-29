@@ -16,7 +16,7 @@ export default ({ req }) => {
    
     return axios.create({
       baseURL:
-        "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+        "http://bms.alwinsimon.com/",
       headers: req.headers,
     });
   } else {
