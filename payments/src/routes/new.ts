@@ -9,6 +9,10 @@ import {
   OrderStatus,
 } from "@bookmyseat/common";
 import { Order } from "../models/order";
+import { stripe } from "../stripe-config";
+import { Payment } from "../models/payment";
+import { PaymentCreatedPublisher } from "../events/publishers/payment-created-publisher";
+import { natsClient } from "../nats-client";
 
 const router = express.Router();
 
@@ -38,7 +42,30 @@ router.post(
       throw new BadRequestError("Cannot create a payment for cancelled order.");
     }
 
-    res.status(201).send({ chargeCreation: "Success" });
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: order.price * 100,
+      currency: "inr",
+      automatic_payment_methods: { enabled: true },
+    });
+
+    const paymentRecord = Payment.build({
+      orderId: order.id,
+      stripeId: paymentIntent.id,
+    });
+
+    await paymentRecord.save();
+
+    // Publish Event Indicating the payment success
+    await new PaymentCreatedPublisher(natsClient.client).publish({
+      id: paymentRecord.id,
+      version: paymentRecord.version,
+      orderId: paymentRecord.orderId,
+      stripeId: paymentRecord.stripeId,
+    });
+
+    res
+      .status(201)
+      .send({ chargeCreation: "Success", paymentId: paymentRecord.id });
   }
 );
 
