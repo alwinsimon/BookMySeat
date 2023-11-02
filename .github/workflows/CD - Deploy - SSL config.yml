@@ -1,13 +1,14 @@
-# ========================================= CD - Deploy - Manifests =========================================
+# ========================================= CD - Deploy - SSL Config =========================================
 
-name: CD - Deploy - Manifests
+name: CD - Deploy - SSL Config
 
 on:
   push:
     branches:
       - production
     paths:
-      - "infra/**"
+      - "infra/ingress-nginx/**"
+      - "infra/ssl/**"
 
 jobs:
   Deploy-Manifests-CD-Pipeline:
@@ -19,6 +20,5 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_ID }}
-      - run: kubectl apply -f infra/statefull
-      - run: kubectl apply -f infra/stateless
+      - run: kubectl apply -f infra/ssl
       - run: kubectl apply -f infra/ingress-nginx/prod
