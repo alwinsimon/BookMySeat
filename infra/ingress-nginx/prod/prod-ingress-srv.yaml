@@ -5,7 +5,14 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-ssl-cert-issuer-prod
 spec:
+  tls:
+  - hosts:
+    - bms.alwinsimon.com
+    - www.bms.alwinsimon.com
+    # Below secretName will be automatically configured in cluster- no manual config required
+    secretName: ssl-cert-key
   rules:
     - host: bms.alwinsimon.com
       http:
