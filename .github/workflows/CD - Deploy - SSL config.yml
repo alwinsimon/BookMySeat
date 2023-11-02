@@ -1,0 +1,24 @@
+# ========================================= CD - Deploy - SSL Config =========================================
+
+name: CD - Deploy - SSL Config
+
+on:
+  push:
+    branches:
+      - production
+    paths:
+      - "infra/ingress-nginx/**"
+      - "infra/ssl/**"
+
+jobs:
+  Deploy-Manifests-CD-Pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_ID }}
+      - run: kubectl apply -f infra/ssl
+      - run: kubectl apply -f infra/ingress-nginx/prod
